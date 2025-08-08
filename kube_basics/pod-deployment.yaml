@@ -1,0 +1,13 @@
+# kubectl apply -f pod-deployment.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dev-nginx
+  labels:
+    app.kubernetes.io/name: dev-nginx
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx:latest
+      ports:
+        - containerPort: 80
