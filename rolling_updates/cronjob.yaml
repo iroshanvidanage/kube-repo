@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: xfusion # job name
+spec:
+  schedule: "*/8 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: cron-xfusion # container name
+            image: httpd:latest
+            command: ["sh", "-c", "echo Welcome to xfusioncorp!"]
+            ports:
+              - containerPort: 80
+          restartPolicy: OnFailure
