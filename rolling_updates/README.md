@@ -56,4 +56,74 @@ Rolling updates in Kubernetes are a powerful way to update your application with
     - `kubectl get deployment nginx-deployment -o=jsonpath='{.spec.template.spec.containers[*].image}'`
 - Validate service connectivity if exposed via a Service.
 
-Would you like to extend this with a CI/CD pipeline integration or add resource constraints for production readiness?
+
+---
+
+---
+
+## Resolve Pod Deployment Issue - Kube Task
+
+```bash
+
+thor@jumphost ~$ k get pods
+NAME        READY   STATUS             RESTARTS   AGE
+webserver   1/2     ImagePullBackOff   0          32s
+
+
+thor@jumphost ~$ k describe pod webserver
+...
+
+Events:
+  Type     Reason     Age                From               Message
+  ----     ------     ----               ----               -------
+  Normal   Scheduled  76s                default-scheduler  Successfully assigned default/webserver to kodekloud-control-plane
+  Normal   Pulling    74s                kubelet            Pulling image "ubuntu:latest"
+  Normal   Pulled     72s                kubelet            Successfully pulled image "ubuntu:latest" in 2.870862238s (2.870923985s including waiting)
+  Normal   Created    71s                kubelet            Created container sidecar-container
+  Normal   Started    71s                kubelet            Started container sidecar-container
+  Normal   Pulling    25s (x3 over 75s)  kubelet            Pulling image "httpd:latests"
+  Warning  Failed     25s (x3 over 74s)  kubelet            Failed to pull image "httpd:latests": rpc error: code = NotFound desc = failed to pull and unpack image "docker.io/library/httpd:latests": failed to resolve reference "docker.io/library/httpd:latests": docker.io/library/httpd:latests: not found
+  Warning  Failed     25s (x3 over 74s)  kubelet            Error: ErrImagePull
+  Normal   BackOff    14s (x4 over 71s)  kubelet            Back-off pulling image "httpd:latests"
+  Warning  Failed     14s (x4 over 71s)  kubelet            Error: ImagePullBackOff
+
+```
+
+Option 1:
+=========
+
+Directly change the image of the container.
+
+`kubectl set image <resource_type>/<resource_name> <container_name>=<image_name>:<image_tag>`
+
+```bash
+k set image pod/webserver httpd-container=httpd:latest
+```
+
+Option 2:
+=========
+Generate the YAML file.
+
+```bash
+k get pods -o yaml > pod.yaml
+```
+
+Edit the spec file: `latests` --> `latest`
+
+```yaml
+containerStatuses:
+- image: httpd:latests
+```
+
+Delete the resource and apply the edited file.
+
+```bash
+k delete -f pod.yaml
+k create -f pod.yaml
+```
+
+```bash
+thor@jumphost ~$ k get pod webserver
+NAME        READY   STATUS    RESTARTS   AGE
+webserver   2/2     Running   0          7m37s
+```
