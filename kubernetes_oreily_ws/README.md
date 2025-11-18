@@ -22,7 +22,7 @@ This is a workshop by Sander (mail@sandervanvugt.nl) from Oreily on 2025 Novembe
 - Each service focuses on a specific business capability and can be developed, deployed, and scaled independently, allowing for greater flexibility and faster development cycles.
 
 
-```bash
+```shell
 # I have aliasses k='kubectl'; in my bashrc
 
 # list all resources
@@ -55,7 +55,7 @@ k create quota -h | less
 - **ConfigMaps**: Allow for storing configuration and other specific parameters in a cloud environment.
 
 
-```bash
+```shell
 # the system services in kube-system namespace
 k get pods -n kube-system
 ```
@@ -71,7 +71,7 @@ k get pods -n kube-system
 
 ## Managing apps with kubectl
 
-```bash
+```shell
 k get all --selector app=webapp
 NAME                         READY   STATUS    RESTARTS   AGE
 pod/webapp-c89577dd5-bpszn   1/1     Running   0          15m
@@ -100,7 +100,7 @@ NAME                                 DESIRED   CURRENT   READY   AGE
 replicaset.apps/dashapp-8578ff4d9f   4         4         4       25s
 ```
 
-```bash
+```shell
 # scaled down from 4 to 2
 k scale deploy dashapp --replicas=2
 
@@ -115,7 +115,7 @@ k scale deploy dashapp --replicas=2
 - This declarative methodology is giving you much more control than the imperative methodology where you create all from the CLI
 - After defining the desired state, use `kubectl apply -f myfile.yaml` to add the configuration to the cluster or change an existing resource
 
-```bash
+```shell
 # generate the yaml manifest file
 k get deploy webapp -o yaml > kube-repo/kubernetes_oreily_ws/deployment_webapp.yaml
 k get pod webapp-c89577dd5-bpszn -o yaml > kube-repo/kubernetes_oreily_ws/pod_webapp.yaml
@@ -142,7 +142,7 @@ k get all -n <name_space>
 
 
 >[!IMPORTANT]
-    ```bash
+    ```shell
     k create mydb --image=mariadb --replicas=3
     # create need to specify the resource type
     # for pods ==> k run
@@ -150,7 +150,7 @@ k get all -n <name_space>
 
 ## Troubleshooting basic infra
 
-```bash
+```shell
 k create deploy mydb --image=mariadb --replicas=3
 
 k describe mydb-5fcf4f6fbb-s4nmp
@@ -166,7 +166,7 @@ k logs mydb-5fcf4f6fbb-s4nmp
 
 ## How to pass env variables
 
-```bash
+```shell
 k set env deploy/mydb MARIADB_ROOT_PASSWORD=password
 
 k get all --selector app=mydb
@@ -186,7 +186,7 @@ replicaset.apps/mydb-6447978996   2         2         1       7s
 # the old replica set will be remained but deprecated -- check later
 ```
 
-```bash
+```shell
 # how to execute commands in a pod/container
 k exec -it mydb-6447978996-kdv8g -- /bin/sh
 ```
@@ -201,7 +201,7 @@ k exec -it mydb-6447978996-kdv8g -- /bin/sh
 - *Ingress* is what should be used to provide user-friendly access to HTTP/HTTPS-based services.
 
 
-```bash
+```shell
 # expose service
 kubectl expose deployment nginxsvc --port=80
 
@@ -217,7 +217,7 @@ kubectl get endpoints
 k get all --selector app=nginxsvc -o wide
 ```
 
-```bash
+```shell
 
                                   |---> pod1
                                   |
@@ -240,7 +240,7 @@ user    NodePort    32000       |-node2-|--------Service----------|- pod2
 - When executing `curl` to get the response from the nginxsvc service, I had to do some extra work since I'm using docker-desktop built-in Kubernetes.
 - The *ClusterIP* is only accessible within the cluster.
 
-```bash
+```shell
 k get svc nginxsvc
 NAME       TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
 nginxsvc   ClusterIP   10.105.178.121   <none>        80/TCP    40m
@@ -279,7 +279,7 @@ Commercial support is available at
 - But if we expose the service with `--type=NodePort` we can expose the service to the host network.
 - Running `curl http:localhost:<NodePort>` should return the response.
 
-```bash
+```shell
 k delete svc nginxsvc
 
 k expose deployment nginxsvc --port=80 --type=NodePort
@@ -328,7 +328,7 @@ Commercial support is available at
 
 
 
-```bash
+```shell
 # create a config map
 k create cm myconf -h | less
 
@@ -352,7 +352,7 @@ k get cm -n kube-systems
 
 dns ---> ingress controller on cluster ---> ingress resource ---> service --> any
 
-```bash
+```shell
 # create a rule to forward traffic
 kubectl create ing nginxsvc --rule="myapp.info/=nginxsvc:80"
 ```
