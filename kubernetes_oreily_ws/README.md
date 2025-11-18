@@ -249,7 +249,8 @@ nginxsvc   ClusterIP   10.105.178.121   <none>        80/TCP    40m
 k run curlpod --rm -it --image=busybox --restart=Never -- sh
 
 wget -qO- http://nginxsvc:80
-
+```
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -286,7 +287,8 @@ k expose deployment nginxsvc --port=80 --type=NodePort
 k get svc nginxsvc
 NAME       TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
 nginxsvc   NodePort   10.111.175.114   <none>        80:32064/TCP   3s
-
+```
+```html
 curl http://localhost:32064
 <!DOCTYPE html>
 <html>
