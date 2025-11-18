@@ -61,10 +61,10 @@ k get pods -n kube-system
 ```
 
 
->![NOTE]
+>[!NOTE]
 > Have seperate pods for tiered applications 1 for frontend, 1 for backend, 1 for data
 
->![IMPORTANT]
+>[!IMPORTANT]
 > Do not run standalone pods, run deployments
 
 
@@ -141,7 +141,7 @@ k get all -n <name_space>
 ```
 
 
->![IMPORTANT]
+>[!IMPORTANT]
     ```bash
     k create mydb --image=mariadb --replicas=3
     # create need to specify the resource type
